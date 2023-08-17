@@ -4,10 +4,12 @@
 Warthog Explorer is a blochain explorer for Warthog.
 Tested on Windows and Linux Ubuntu 22
 
+Live Explorer : http://warthog.makertronic-yt.com/
+
 Compile and install :
 ---------------------- 
 
-git clone this repository
+git clone https://github.com/makertronic/WarthogExplorer
 
 Modifiy "const" in the main.go to suit yours needs
 
