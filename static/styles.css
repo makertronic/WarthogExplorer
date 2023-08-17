@@ -1,0 +1,83 @@
+/* styles.css */
+body {
+    background: linear-gradient(-45deg, #08111a, #203076, #08111a, #203076);
+    background-size: 400% 400%;
+    animation: gradient 30s ease infinite;
+    height: 100vh;
+    font-family: monospace;
+    font-size: 12px;
+    color: #6095ab;
+  }
+
+@keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+label, .bold {
+    font-weight: bold;
+}
+
+input, select, textarea {
+    background: -webkit-linear-gradient(#01758d, #575454);
+    border: 1px solid #444;
+    border-radius: 5px;
+    color: #fff;
+    padding: 5px;
+}
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #fff;
+    opacity: 1; /* Firefox */
+}
+
+h1 {
+    font-size: 35px;
+    text-align: center;
+    background: linear-gradient(353deg, rgba(2,0,36,1) 0%, rgb(139 217 233) 77%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    border-bottom: 1px solid #538199;
+    width: 90%;
+    margin: 0 auto;
+    padding-bottom: 12px;
+}
+
+h2 {
+    font-size: 15px;
+    text-align: left;
+    background: linear-gradient(353deg, rgba(2,0,36,1) 0%, rgb(139 217 233) 77%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.content {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.content-left {
+    width: 45%;
+    float: left;
+}
+
+.content-right {
+    width: 45%;
+    float: right;
+}
+
+.box {
+    padding: 20px;
+    border: 1px solid #0b0b0b;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    margin-top: 18px;
+}
+
+
