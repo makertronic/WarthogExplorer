@@ -13,6 +13,7 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"time"
 
@@ -21,7 +22,7 @@ import (
 )
 
 const (
-	VERSION   = "1.0.0"
+	VERSION   = "1.0.1"
 	NODE      = "192.168.1.8"
 	NODE_PORT = "3000"
 	HTTP_PORT = "8080"
@@ -33,51 +34,75 @@ func init() {
 	tmpl = template.Must(template.ParseFiles("templates/index.html"))
 }
 
-func handleHomePage(w http.ResponseWriter, r *http.Request) {
-	var data PageData
+func handlePOST(w http.ResponseWriter, r *http.Request) {
 
-	if r.Method == http.MethodPost {
-		address := r.FormValue("address")
-		balance, err := fetchBalance(address)
-		if err != nil {
-			http.Error(w, "Failed to fetch balance", http.StatusInternalServerError)
-			return
-		}
-		hashRate, err := fetchHashRate()
-		if err != nil {
-			http.Error(w, "Failed to fetch hash rate", http.StatusInternalServerError)
-			return
-		}
-		chainHead, err := fetchChainHead()
-		if err != nil {
-			http.Error(w, "Failed to fetch chain head data", http.StatusInternalServerError)
-			return
-		}
+	// Récupération des données
+	address := r.FormValue("address")
 
-		data.Balance = fmt.Sprintf("Account ID: %d, Balance: %s", balance.AccountID, balance.Balance)
-		data.HashRate = hashRate.Last100BlocksEstimate
-		data.ChainHeight = chainHead.Height
-		data.ChainDifficulty = chainHead.Difficulty
-	} else {
-		// Chargement initial de la page
-		chainHead, err := fetchChainHead()
-		if err != nil {
-			http.Error(w, "Failed to fetch chain head data", http.StatusInternalServerError)
-			return
-		}
-
-		data.ChainHeight = chainHead.Height
-		data.ChainDifficulty = chainHead.Difficulty
-
-		hashRate, err := fetchHashRate()
-		if err != nil {
-			http.Error(w, "Failed to fetch hash rate", http.StatusInternalServerError)
-			return
-		}
-		data.HashRate = hashRate.Last100BlocksEstimate
+	balance, err := fetchBalance(address)
+	if err != nil {
+		http.Error(w, "Failed to fetch balance", http.StatusInternalServerError)
+		return
 	}
 
+	// Idem pour hashrate, chainHead, transactions
+
+	transactions, code, err := fetchTransactions(address)
+	if err != nil {
+		http.Error(w, "Failed to fetch transactions", http.StatusInternalServerError)
+		return
+	}
+
+	if code != 0 {
+		log.Printf("Transactions API error: %d", code)
+	}
+
+	// Construction de la réponse
+	data := PageData{
+		Balance:      balance.Balance,
+		Transactions: transactions,
+		Version:      VERSION,
+	}
+
+	data.Balance = fmt.Sprintf("Account ID: %d, Balance: %s", balance.AccountID, balance.Balance)
+
+	// Affichage de la réponse
 	tmpl.Execute(w, data)
+
+}
+
+func handleGET(w http.ResponseWriter, r *http.Request) {
+
+	var data PageData
+
+	// Chargement initial de la page
+	chainHead, err := fetchChainHead()
+	if err != nil {
+		http.Error(w, "Failed to fetch chain head data", http.StatusInternalServerError)
+		return
+	}
+
+	data.ChainHeight = chainHead.Height
+	data.ChainDifficulty = chainHead.Difficulty
+
+	hashRate, err := fetchHashRate()
+	if err != nil {
+		http.Error(w, "Failed to fetch hash rate", http.StatusInternalServerError)
+		return
+	}
+	data.HashRate = hashRate.Last100BlocksEstimate
+	// Rendu du template
+	tmpl.Execute(w, data)
+}
+
+func handleHomePage(w http.ResponseWriter, r *http.Request) {
+
+	if r.Method == http.MethodPost {
+		handlePOST(w, r)
+	} else {
+		handleGET(w, r)
+	}
+
 }
 
 func main() {

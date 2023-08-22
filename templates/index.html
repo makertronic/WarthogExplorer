@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Warthog Explorer</title>
+	<title>Warthog Explorer</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/static/styles.css">
+	<script src="/static/index.js"></script>
 </head>
 <body>
 
@@ -22,6 +25,29 @@
 			<div id="result">
 				<div><span class="bold">{{ .Balance }}</span></div>
 			</div>
+			<div id="wallet_transactions">
+				{{if .Transactions}}
+				<h2>Transactions</h2>
+					{{ range $block := .Transactions }}
+
+						{{ range $reward := $block.Transactions.Rewards }}
+							<div class="transaction_hist">
+								<h3>Block {{ $block.Height }}</h3>
+								<div class="txamount"><strong>Amount: {{ $reward.Amount }}</strong></div>
+								<div class="txdestination"><strong>To Address:</strong> {{ $reward.ToAddress }}</div>
+								<div class="txhash"><strong>Tx Hash:</strong> {{ $reward.TxHash }}</div>
+							</div>
+						{{ end }}
+
+					{{ end }}
+					<div class="transactions_nav">
+						<button id="prevPageButton"> < </button>
+						<button id="nextPageButton"> > </button>
+						<div id="pageInfo"></div>
+					</div>
+
+				{{ end }}
+			</div>
 		</div>
 		<div class="content-right box">
 			<h2>Network Data</h2>
@@ -30,5 +56,10 @@
 			<div><span class="bold">Chain Difficulty:</span> {{ .ChainDifficulty }}</div>			
 		</div>
 	</div>
+
+	<footer>
+		<p>Warthog Explorer v{{.Version}} | Official website : <a href="https://www.warthogcoin.com" target="_blank">www.warthogcoin.com</a></p> 
+	</footer>
+
 </body>
 </html>

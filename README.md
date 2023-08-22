@@ -21,5 +21,10 @@ launch the executable.
 Change log :
 ---------------------- 
 
+version 1.0.1 : 
+- Added Wallet transaction history,
+- CSS changes,
+- various codes modifications.
+
  version 1.0.0 :
  - initial release, console version.
